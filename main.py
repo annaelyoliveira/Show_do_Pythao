@@ -29,20 +29,19 @@ green = (0, 255, 0)
 red = (255, 0, 0)
 
 # Imagem de fundo
-BG = pygame.image.load("assets/Background.jpg")
+BG = pygame.image.load("assets/imagens/Background.jpg")
 
 # Imagens
-BUTTON_IMAGE = pygame.image.load("assets/button.png")  
-LOGO = pygame.image.load("assets/logo.png")
-derrota = pygame.image.load("assets/derrota.png")
-vitoria = pygame.image.load("assets/vitoria.png")
+BUTTON_IMAGE = pygame.image.load("assets/imagens/button.png")  
+LOGO = pygame.image.load("assets/imagens/logo.png")
+derrota = pygame.image.load("assets/imagens/derrota.png")
+vitoria = pygame.image.load("assets/imagens/vitoria.png")
 
 #Efeitos sonoros
 
 pygame.mixer.init()
 
 som_acerto = pygame.mixer.Sound("assets/musicas/silvio-santos-certa-resposta_1.wav")
-som_acerto1 = pygame.mixer.Sound("assets/musicas/applause-alks-ses-efekti-125030.wav")
 som_erro = pygame.mixer.Sound("assets/musicas/errou-show-do-milhao.wav")
 som_tempo = pygame.mixer.Sound("assets/musicas/suspense-show-do-milhao.wav")
 som_tempo_fim = pygame.mixer.Sound("assets/musicas/tempo-acabou-show-do-milhao-_1_.wav")
@@ -53,7 +52,6 @@ som_inicio = pygame.mixer.Sound("assets/musicas/silvio-santos-abertura-show-do-m
 
 som_inicio.set_volume(0.5)
 som_acerto.set_volume(1)
-som_acerto1.set_volume(1)
 
 # Fontes
 def get_font(size):
@@ -65,21 +63,12 @@ def mostrar_texto(texto, x, y, cor=white):
     screen.blit(texto_surface, (x, y))
 
 # Função para exibir a mensagens do Facilitador e Pulo
-def mostrar_mensagem(mensagem):
+def mostrar_mensagem_alternativas(mensagem):
     texto_surface = get_font(26).render(mensagem, True, red)
     largura_texto, altura_texto = texto_surface.get_size()
     x = width - largura_texto - 20  # Margem de 20 pixels da borda direita
     y = height - altura_texto - 20  # Margem de 20 pixels da borda inferior
     screen.blit(texto_surface, (x, y))
-
-# Função para calcular a pontuação total
-def calcular_pontuacao_total(questoes_acertadas):
-    return listaPremio[questoes_acertadas] * 1000
-
-# Função para exibir a pontuação
-def mostrar_pontuacao():
-    pontuacao_total = calcular_pontuacao_total(contador)
-    mostrar_texto(f"Pontuação: R${pontuacao_total}", 900, 20, red)
 
 # Função para exibir o temporizador
 def mostrar_temporizador():
@@ -94,7 +83,6 @@ def exibir_pergunta(pergunta, alternativas):
     for alternativa in alternativas:
         mostrar_texto(alternativa.strip(), 50, y_offset)  # Ajustado para x=50 (alinhado à esquerda)
         y_offset += 40
-    mostrar_pontuacao()
     mostrar_temporizador()
 
     # Divide a pergunta em várias linhas
@@ -113,7 +101,6 @@ def exibir_pergunta(pergunta, alternativas):
             y_offset += 30  # Espaçamento entre as linhas
 
     # Exibe a pontuação e o temporizador
-    mostrar_pontuacao()
     mostrar_temporizador()
 
 # Função para remover duas alternativas erradas
@@ -165,9 +152,8 @@ def tela_derrota():
 
         pygame.display.update()
 
-def tela_vitoria(pontuacao_total):
+def tela_vitoria():
     som_acerto.stop()
-    som_acerto1.stop()
     som_vitoria.play()
     som_tempo.stop()
     while True:
@@ -179,7 +165,7 @@ def tela_vitoria(pontuacao_total):
         screen.blit(vitoria, (130, 100))
 
         # Exibe a pontuação final
-        PONTUACAO_TEXT = get_font(50).render(f"Pontuação final: R$1.000.000", True, white)
+        PONTUACAO_TEXT = get_font(50).render(f"Parabéns você ganhou: R$1.000.000", True, white)
         PONTUACAO_RECT = PONTUACAO_TEXT.get_rect(center=(640, 360))
         screen.blit(PONTUACAO_TEXT, PONTUACAO_RECT)
 
@@ -243,7 +229,6 @@ def play():
             # Redesenha a pergunta, pontuação e temporizador
             mostrar_texto(f"Pergunta {contador + 1}:", 50, 80)
             mostrar_texto(pergunta, 50, 150)
-            mostrar_pontuacao()
             mostrar_temporizador()
 
             # Botão de pular (com a quantidade de pulos restantes)
@@ -285,7 +270,7 @@ def play():
                             proxima_pergunta = True  # Sai do loop interno
                             break  # Sai do loop interno para carregar a próxima pergunta
                         else:
-                            mostrar_mensagem("Você não tem mais pulos")
+                            mostrar_mensagem_alternativas("Você não tem mais pulos")
                             pygame.display.flip()
                             sleep(2)
                     if DELETE_BUTTON.checkForInput(PLAY_MOUSE_POS):
@@ -293,7 +278,7 @@ def play():
                             alternativas = remover_alternativas_erradas(alternativas, resposta_correta)
                             contador_delecoes += 1
                         else:
-                            mostrar_mensagem("Você não pode mais deletar alternativas")
+                            mostrar_mensagem_alternativas("Você não pode mais deletar alternativas")
                             pygame.display.flip()
                             sleep(2)
                     for i, botao in enumerate(botoes_alternativas):
@@ -303,13 +288,10 @@ def play():
                                 contador += 1
                                 indice_pergunta += 1  # Avança para a próxima pergunta
                                 if indice_pergunta >= len(questoes):  # Verifica se todas as perguntas foram respondidas
-                                    som_acerto1.stop()
-                                    pontuacao_total = calcular_pontuacao_total(contador)
-                                    tela_vitoria(pontuacao_total)  # Chama a tela de vitória com a pontuação total
+                                    tela_vitoria()  # Chama a tela de vitória com a pontuação total
                                     return  # Sai da função play
                                 proxima_pergunta = True  # Sai do loop interno
                                 som_tempo.stop()
-                                som_acerto1.stop()  # Para o som 
                                 som_tempo.play()
                                 break  # Sai do loop interno para carregar a próxima pergunta
                             else:
@@ -317,7 +299,6 @@ def play():
                                 break
 
             if errou:
-                som_acerto1.stop()
                 tela_derrota()  # Chama a tela de derrota
                 return
 
@@ -334,9 +315,9 @@ def main_menu():
 
         screen.blit(LOGO, (130, 40))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 350), 
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/imagens/Play Rect.png"), pos=(640, 350), 
                              text_input="PLAY", font=get_font(70), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550), 
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/imagens/Quit Rect.png"), pos=(640, 550), 
                              text_input="QUIT", font=get_font(70), base_color="#d7fcd4", hovering_color="White")
 
         
