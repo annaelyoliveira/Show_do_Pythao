@@ -20,7 +20,7 @@ contador_pulos = 0
 contador_delecoes = 0  # Contador de deleções
 errou = False
 pontuacao = 0
-tempo_restante = 15  # Tempo em segundos para cada pergunta
+tempo_restante = 20  # Tempo em segundos para cada pergunta
 
 # Cores
 white = (255, 255, 255)
@@ -71,35 +71,6 @@ def mostrar_mensagem_alternativas(mensagem):
 # Função para exibir o temporizador
 def mostrar_temporizador():
     mostrar_texto(f"Tempo: {tempo_restante}s", 20, 20)
-
-# Função para exibir uma pergunta
-def exibir_pergunta(pergunta, alternativas):
-    screen.fill(black)
-    mostrar_texto(f"Pergunta {contador + 1}:", 50, 50)
-    mostrar_texto(pergunta, 50, 150)
-    y_offset = 100
-    for alternativa in alternativas:
-        mostrar_texto(alternativa.strip(), 50, y_offset)  # Ajustado para x=50 (alinhado à esquerda)
-        y_offset += 40
-    mostrar_temporizador()
-
-    # Divide a pergunta em várias linhas
-    linhas_pergunta = mostrar_texto(pergunta, 70)  # 80 caracteres por linha
-    y_offset = 150
-    for linha in linhas_pergunta:
-        mostrar_texto(linha, 50, y_offset)
-        y_offset += 30  # Espaçamento entre as linhas
-
-    # Exibe as alternativas
-    y_offset += 20  # Espaçamento adicional antes das alternativas
-    for alternativa in alternativas:
-        linhas_alternativa = mostrar_texto(alternativa.strip(), 80)  # 80 caracteres por linha
-        for linha in linhas_alternativa:
-            mostrar_texto(linha, 50, y_offset)
-            y_offset += 30  # Espaçamento entre as linhas
-
-    # Exibe a pontuação e o temporizador
-    mostrar_temporizador()
 
 # Função para remover duas alternativas erradas
 def remover_alternativas_erradas(alternativas, resposta_correta):
