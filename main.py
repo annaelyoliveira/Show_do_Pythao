@@ -2,8 +2,8 @@ import pygame
 import sys
 from time import sleep
 from random import sample
-from questions import questoes, listaPremio
-from ui import Button
+from questions import questoes
+from buttons_ui import Button
 
 # Inicialização do Pygame
 pygame.init()
@@ -16,7 +16,7 @@ pygame.display.set_caption("Show do Pythão")
 
 # Variáveis globais
 contador = 0
-contadorpulos = 0
+contador_pulos = 0
 contador_delecoes = 0  # Contador de deleções
 errou = False
 pontuacao = 0
@@ -28,12 +28,10 @@ black = (0, 0, 0)
 green = (0, 255, 0)
 red = (255, 0, 0)
 
-# Imagem de fundo
-BG = pygame.image.load("assets/imagens/Background.jpg")
-
 # Imagens
-BUTTON_IMAGE = pygame.image.load("assets/imagens/button.png")  
-LOGO = pygame.image.load("assets/imagens/logo.png")
+background = pygame.image.load("assets/imagens/Background.jpg")
+button_image = pygame.image.load("assets/imagens/button.png")  
+logo = pygame.image.load("assets/imagens/logo.png")
 derrota = pygame.image.load("assets/imagens/derrota.png")
 vitoria = pygame.image.load("assets/imagens/vitoria.png")
 
@@ -113,9 +111,9 @@ def remover_alternativas_erradas(alternativas, resposta_correta):
     return alternativas
 
 def reiniciar_jogo():
-    global contador, contadorpulos, contador_delecoes, errou, pontuacao, tempo_restante
+    global contador, contador_pulos, contador_delecoes, errou, pontuacao, tempo_restante
     contador = 0
-    contadorpulos = 0
+    contador_pulos = 0
     contador_delecoes = 0  # Reinicia o contador de deleções
     errou = False
     pontuacao = 0
@@ -127,18 +125,18 @@ def tela_derrota():
     reiniciar_jogo()  # Reinicia as variáveis ao voltar ao menu
 
     while True:
-        screen.blit(BG, (0, 0))  # Desenha o fundo
+        screen.blit(background, (0, 0))  # Desenha o fundo
 
-        DERROTA_MOUSE_POS = pygame.mouse.get_pos()
+        derrota_mouse_pos = pygame.mouse.get_pos()
 
         # Texto de derrota
         screen.blit(derrota, (130, 200))
 
         # Botão para voltar ao menu
-        VOLTAR_BUTTON = Button(image=None, pos=(640, 460), 
+        voltar_button = Button(image=None, pos=(640, 460), 
                               text_input="VOLTAR AO MENU", font=get_font(50), base_color=white, hovering_color=green)
-        VOLTAR_BUTTON.changeColor(DERROTA_MOUSE_POS)
-        VOLTAR_BUTTON.update(screen)
+        voltar_button.changeColor(derrota_mouse_pos)
+        voltar_button.update(screen)
 
         # Verifica eventos
         for event in pygame.event.get():
@@ -146,7 +144,7 @@ def tela_derrota():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if VOLTAR_BUTTON.checkForInput(DERROTA_MOUSE_POS):
+                if voltar_button.checkForInput(derrota_mouse_pos):
                     reiniciar_jogo()  # Reinicia o jogo antes de voltar ao menu
                     main_menu()  # Volta ao menu principal
 
@@ -157,23 +155,23 @@ def tela_vitoria():
     som_vitoria.play()
     som_tempo.stop()
     while True:
-        screen.blit(BG, (0, 0))  # Desenha o fundo
+        screen.blit(background, (0, 0))  # Desenha o fundo
 
-        VITORIA_MOUSE_POS = pygame.mouse.get_pos()
+        vitoria_mouse_pos = pygame.mouse.get_pos()
 
-        # Texto de vitória
+        # Imagem de vitória
         screen.blit(vitoria, (130, 100))
 
         # Exibe a pontuação final
-        PONTUACAO_TEXT = get_font(50).render(f"Parabéns você ganhou: R$1.000.000", True, white)
-        PONTUACAO_RECT = PONTUACAO_TEXT.get_rect(center=(640, 360))
-        screen.blit(PONTUACAO_TEXT, PONTUACAO_RECT)
+        pontuacao_text = get_font(50).render(f"Parabéns você ganhou: R$1.000.000", True, white)
+        pontuacao_rect = pontuacao_text.get_rect(center=(640, 360))
+        screen.blit(pontuacao_text, pontuacao_rect)
 
         # Botão para voltar ao menu
-        VOLTAR_BUTTON = Button(image=None, pos=(640, 460), 
+        voltar_button = Button(image=None, pos=(640, 460), 
                               text_input="VOLTAR AO MENU", font=get_font(50), base_color=white, hovering_color=green)
-        VOLTAR_BUTTON.changeColor(VITORIA_MOUSE_POS)
-        VOLTAR_BUTTON.update(screen)
+        voltar_button.changeColor(vitoria_mouse_pos)
+        voltar_button.update(screen)
 
         # Verifica eventos
         for event in pygame.event.get():
@@ -181,7 +179,7 @@ def tela_vitoria():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if VOLTAR_BUTTON.checkForInput(VITORIA_MOUSE_POS):
+                if voltar_button.checkForInput(vitoria_mouse_pos):
                     main_menu()  # Volta ao menu principal
 
         pygame.display.update()
@@ -209,7 +207,7 @@ def play():
         proxima_pergunta = False  # Variável de controle para avançar para a próxima pergunta
 
         while not proxima_pergunta:
-            PLAY_MOUSE_POS = pygame.mouse.get_pos()
+            play_mouse_pos = pygame.mouse.get_pos()
 
             # Atualiza o temporizador
             current_time = pygame.time.get_ticks()
@@ -224,36 +222,36 @@ def play():
 
             # Limpa a tela antes de redesenhar
             screen.fill(black)
-            screen.blit(BG, (0, 0))
+            screen.blit(background, (0, 0))
 
-            # Redesenha a pergunta, pontuação e temporizador
+            # Redesenha a pergunta e temporizador
             mostrar_texto(f"Pergunta {contador + 1}:", 50, 80)
             mostrar_texto(pergunta, 50, 150)
             mostrar_temporizador()
 
             # Botão de pular (com a quantidade de pulos restantes)
-            PLAY_JUMP = Button(image=None, pos=(100, 680),
-                               text_input=f"Pular ({3 - contadorpulos})", font=get_font(30), base_color=white, hovering_color=green)
-            PLAY_JUMP.changeColor(PLAY_MOUSE_POS)
-            PLAY_JUMP.update(screen)
+            play_pulo = Button(image=None, pos=(100, 680),
+                               text_input=f"Pular ({3 - contador_pulos})", font=get_font(30), base_color=white, hovering_color=green)
+            play_pulo.changeColor(play_mouse_pos)
+            play_pulo.update(screen)
 
             # Botão de deletar alternativas
-            DELETE_BUTTON = Button(image=None, pos=(280, 680),
+            delete_button = Button(image=None, pos=(280, 680),
                                    text_input=f"Facilitar ({3 - contador_delecoes})", font=get_font(30), base_color=white, hovering_color=green)
-            DELETE_BUTTON.changeColor(PLAY_MOUSE_POS)
-            DELETE_BUTTON.update(screen)
+            delete_button.changeColor(play_mouse_pos)
+            delete_button.update(screen)
 
             # Botões para as alternativas
             botoes_alternativas = []
             y_offset = 250  
             for alternativa in alternativas:
-                botao = Button(image=BUTTON_IMAGE, pos=(630, y_offset + 20),  # Use a imagem do botão
+                botao = Button(image=button_image, pos=(630, y_offset + 20),
                                text_input=alternativa.strip(), font=get_font(19), base_color=white, hovering_color=green)
                 botoes_alternativas.append(botao)
                 y_offset += 100
 
             for botao in botoes_alternativas:
-                botao.changeColor(PLAY_MOUSE_POS)
+                botao.changeColor(play_mouse_pos)
                 botao.update(screen)
 
             # Verifica eventos
@@ -262,7 +260,7 @@ def play():
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if PLAY_JUMP.checkForInput(PLAY_MOUSE_POS):
+                    if play_pulo.checkForInput(play_mouse_pos):
                         if contadorpulos < 3:
                             contadorpulos += 1
                             contador += 1
@@ -273,7 +271,7 @@ def play():
                             mostrar_mensagem_alternativas("Você não tem mais pulos")
                             pygame.display.flip()
                             sleep(2)
-                    if DELETE_BUTTON.checkForInput(PLAY_MOUSE_POS):
+                    if delete_button.checkForInput(play_mouse_pos):
                         if contador_delecoes < 3:
                             alternativas = remover_alternativas_erradas(alternativas, resposta_correta)
                             contador_delecoes += 1
@@ -282,7 +280,7 @@ def play():
                             pygame.display.flip()
                             sleep(2)
                     for i, botao in enumerate(botoes_alternativas):
-                        if botao.checkForInput(PLAY_MOUSE_POS):
+                        if botao.checkForInput(play_mouse_pos):
                             if alternativas[i] == resposta_correta:
                                 som_acerto.play()
                                 contador += 1
@@ -309,20 +307,20 @@ def play():
 def main_menu():
     som_inicio.play()
     while True:
-        screen.blit(BG, (0, 0))
+        screen.blit(background, (0, 0))
 
-        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        menu_mouse_pos = pygame.mouse.get_pos()
 
-        screen.blit(LOGO, (130, 40))
+        screen.blit(logo, (130, 40))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/imagens/Play Rect.png"), pos=(640, 350), 
+        play_button = Button(image=pygame.image.load("assets/imagens/Play Rect.png"), pos=(640, 350), 
                              text_input="PLAY", font=get_font(70), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/imagens/Quit Rect.png"), pos=(640, 550), 
+        quit_button = Button(image=pygame.image.load("assets/imagens/Quit Rect.png"), pos=(640, 550), 
                              text_input="QUIT", font=get_font(70), base_color="#d7fcd4", hovering_color="White")
 
         
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
+        for button in [play_button, quit_button]:
+            button.changeColor(menu_mouse_pos)
             button.update(screen)
 
         for event in pygame.event.get():
@@ -330,9 +328,9 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if play_button.checkForInput(menu_mouse_pos):
                     play()
-                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if quit_button.checkForInput(menu_mouse_pos):
                     pygame.quit()
                     sys.exit()
 
