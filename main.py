@@ -184,12 +184,12 @@ def tela_vitoria():
 
         pygame.display.update()
 
-# Função principal do jogo
+#Função principal do jogo
 def play():
     som_tempo.play()
     som_inicio.stop()
     reiniciar_jogo()  # Reinicia as variáveis ao iniciar uma nova partida
-    global contador, contadorpulos, contador_delecoes, errou, pontuacao, tempo_restante
+    global contador, contador_pulos, contador_delecoes, errou, pontuacao, tempo_restante
 
     # Índice para percorrer a lista de perguntas em ordem
     indice_pergunta = 0
@@ -229,6 +229,11 @@ def play():
             mostrar_texto(pergunta, 50, 150)
             mostrar_temporizador()
 
+            # Exibe a quantidade de perguntas e a pergunta atual (ex: 1/12)
+            total_perguntas = len(questoes)
+            texto_contador = f"{contador + 1}/{total_perguntas}"
+            mostrar_texto(texto_contador, width - 100, 20)  # Exibe no canto superior direito
+
             # Botão de pular (com a quantidade de pulos restantes)
             play_pulo = Button(image=None, pos=(100, 680),
                                text_input=f"Pular ({3 - contador_pulos})", font=get_font(30), base_color=white, hovering_color=green)
@@ -261,8 +266,8 @@ def play():
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_pulo.checkForInput(play_mouse_pos):
-                        if contadorpulos < 3:
-                            contadorpulos += 1
+                        if contador_pulos < 3:
+                            contador_pulos += 1
                             contador += 1
                             indice_pergunta += 1  # Avança para a próxima pergunta
                             proxima_pergunta = True  # Sai do loop interno
