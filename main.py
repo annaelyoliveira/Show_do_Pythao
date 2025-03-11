@@ -71,7 +71,6 @@ def mostrar_mensagem_alternativas(mensagem):
 # Função para exibir o temporizador
 def mostrar_temporizador():
     mostrar_texto(f"Tempo: {tempo_restante}s", 20, 20)
-
 # Função para remover duas alternativas erradas
 def remover_alternativas_erradas(alternativas, resposta_correta):
     alternativas_erradas = [alt for alt in alternativas if alt != resposta_correta]
@@ -87,8 +86,7 @@ def reiniciar_jogo():
     contador_pulos = 0
     contador_delecoes = 0  # Reinicia o contador de deleções
     errou = False
-    pontuacao = 0
-    tempo_restante = 15
+    tempo_restante = 20
 
 def tela_derrota():
     som_erro.play() # Da play na musica
