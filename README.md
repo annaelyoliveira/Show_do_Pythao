@@ -36,5 +36,5 @@ O objetivo do jogo é responder corretamente a uma série de perguntas de múlti
 ![tela vitoria](assets/Demonstracao_Projeto/Tela_vitoria.png)
 # Tela Derrota
 ![tela derrota](assets/Demonstracao_Projeto/Tela_derrota.png)
-# Video Demonstrativo
+
 
