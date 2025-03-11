@@ -1,4 +1,4 @@
-# Gerencia as perguntas e respostas
+#Dicionário com as perguntas, opções e respostas
 
 questoes = [
     {
