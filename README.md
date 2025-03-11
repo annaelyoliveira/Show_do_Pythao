@@ -24,3 +24,17 @@ O objetivo do jogo é responder corretamente a uma série de perguntas de múlti
 - **Python**: Linguagem de programação principal.
 - **Pygame**: Biblioteca para desenvolvimento de jogos.
 - **Git**: Controle de versão do projeto.
+
+## Demonstração e Imagens
+# Tela Inicial
+![tela inicial](assets/Demonstracao_Projeto/Tela_inicial.png)
+# Perguntas
+![perguntas](assets/Demonstracao_Projeto/Perguntas.png)
+# Facilitar
+![facilitar](assets/Demonstracao_Projeto/Facilitar.png)
+# Tela Vitória
+![tela vitoria](assets/Demonstracao_Projeto/Tela_vitoria.png)
+# Tela Derrota
+![tela derrota](assets/Demonstracao_Projeto/Tela_derrota.png)
+# Video Demonstrativo
+
